@@ -49,9 +49,6 @@ If asked about other countries, provide general guidance but emphasize that your
 Always encourage users to verify details on the official ECI website (voters.eci.gov.in).
 """
 
-@app.get("/")
-async def root():
-    return {"message": "VoteSmart API is running"}
 
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
@@ -74,11 +71,14 @@ async def chat(request: ChatRequest):
 # Serve static files from the frontend/dist directory
 frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
 
-# Ensure the directory exists to avoid errors during startup (it will be created by the build process)
+# Ensure the directory exists to avoid errors during startup
 if not os.path.exists(frontend_path):
     os.makedirs(frontend_path, exist_ok=True)
+assets_path = os.path.join(frontend_path, "assets")
+if not os.path.exists(assets_path):
+    os.makedirs(assets_path, exist_ok=True)
 
-app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
+app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
 @app.get("/")
 async def serve_index():
